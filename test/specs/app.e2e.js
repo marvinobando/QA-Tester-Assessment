@@ -197,5 +197,22 @@ describe('Automation Testing', () => {
     await browser.pause(browserPause);
   });
 
+  it('should click on the finish button', async () => {
+    await expect(browser).toHaveUrl('https://www.saucedemo.com/checkout-step-two.html');
+
+    await $('#finish').click();
+
+    await browser.pause(browserPause);
+  });
+
+  it('should validate that THANK YOU FOR YOUR ORDER is displayed', async () => {
+    await expect(browser).toHaveUrl('https://www.saucedemo.com/checkout-complete.html');
+
+    const thankYouMessage = 'THANK YOU FOR YOUR ORDER';
+    const thankYouText = await $('.complete-header').getText();
+
+    await expect(thankYouText).toEqual(thankYouMessage);
+  });
+
   // END CHECKOUT
 });
