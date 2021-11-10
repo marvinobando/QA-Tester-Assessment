@@ -73,7 +73,8 @@ describe('Automation Testing', () => {
       }
     }
 
-    await $('.shopping_cart_link').click();
+    // Click in shopping cart button
+    await $('#shopping_cart_container .shopping_cart_link').click();
 
     // await browser.pause(3000);
   });
@@ -98,6 +99,15 @@ describe('Automation Testing', () => {
       // Verify the product name is the same as the one added
       await expect(addedProducts.includes(productName)).toEqual(true);
     }
+  });
+
+  it('should click on the checkout button in Your Cart form', async () => {
+    await expect(browser).toHaveUrl('https://www.saucedemo.com/cart.html');
+
+    // Click in Checkout button
+    await $('#checkout').click();
+
+    await browser.pause(3000);
   });
 
   // END CART
