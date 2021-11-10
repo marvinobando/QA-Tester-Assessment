@@ -153,5 +153,13 @@ describe('Automation Testing', () => {
     await expect(currentPostalCode).not.toEqual('');
   });
 
+  it('Click on the Continue button', async () => {
+    await expect(browser).toHaveUrl('https://www.saucedemo.com/checkout-step-one.html');
+
+    await $('#continue').click();
+
+    await browser.pause(1500);
+  });
+
   // END CHECKOUT
 });
