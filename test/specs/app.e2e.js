@@ -57,6 +57,8 @@ describe('Automation Testing', () => {
 
   // DASHBOARD
 
+  const addedProducts = [];
+
   it('should add 2 items in dashboard', async () => {
     await expect(browser).toHaveUrl('https://www.saucedemo.com/inventory.html');
 
@@ -66,11 +68,37 @@ describe('Automation Testing', () => {
       for (let i = 0; i < 2; i++) {
         const item = await inventoryItems[i];
         await item.$('.btn_inventory').click();
+
+        addedProducts.push(await item.$('.inventory_item_name').getText());
       }
     }
+
+    await $('.shopping_cart_link').click();
 
     // await browser.pause(3000);
   });
 
   // END DASHBOARD
+
+  //  CART
+
+  it('should have the respective 2 products in the Your Cart form', async () => {
+    await expect(browser).toHaveUrl('https://www.saucedemo.com/cart.html');
+
+    const cartItems = await $$('.cart_list .cart_item');
+
+    // Count the number of items in the cart
+    await expect(cartItems.length).toEqual(2);
+
+    for (let i = 0; i < 2; i++) {
+      const item = await cartItems[i];
+
+      const productName = await item.$('.inventory_item_name').getText();
+
+      // Verify the product name is the same as the one added
+      await expect(addedProducts.includes(productName)).toEqual(true);
+    }
+  });
+
+  // END CART
 });
