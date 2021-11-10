@@ -1,3 +1,5 @@
+const browserPause = 1500;
+
 describe('Automation Testing', () => {
   // Init consts and browser
   let siteURL;
@@ -34,7 +36,7 @@ describe('Automation Testing', () => {
     await usernameInput.setValue(username);
     await passwordInput.setValue(password);
 
-    await browser.pause(1500);
+    await browser.pause(browserPause);
   });
 
   it('should verify that the input contains their respective values', async () => {
@@ -54,7 +56,7 @@ describe('Automation Testing', () => {
     // Verify user was logged in successfully
     await expect(usernameCookie[0].value).toEqual(username);
 
-    await browser.pause(1500);
+    await browser.pause(browserPause);
   });
 
   // END LOGIN
@@ -77,7 +79,7 @@ describe('Automation Testing', () => {
       }
     }
 
-    await browser.pause(1500);
+    await browser.pause(browserPause);
 
     // Click in shopping cart button
     await $('#shopping_cart_container .shopping_cart_link').click();
@@ -104,7 +106,7 @@ describe('Automation Testing', () => {
       await expect(addedProducts.includes(productName)).toEqual(true);
     }
 
-    await browser.pause(1500);
+    await browser.pause(browserPause);
   });
 
   it('should click on the checkout button in Your Cart form', async () => {
@@ -113,7 +115,7 @@ describe('Automation Testing', () => {
     // Click in Checkout button
     await $('#checkout').click();
 
-    await browser.pause(1500);
+    await browser.pause(browserPause);
   });
 
   // END CART
@@ -135,9 +137,7 @@ describe('Automation Testing', () => {
     await lastNameInput.setValue('Doe');
     await postalCodeInput.setValue('12345');
 
-    await browser.pause(1500);
-
-    // await $('#continue').click();
+    await browser.pause(browserPause);
   });
 
   it('should validate that required fields in the checkout form', async () => {
@@ -153,12 +153,48 @@ describe('Automation Testing', () => {
     await expect(currentPostalCode).not.toEqual('');
   });
 
-  it('Click on the Continue button', async () => {
+  it('should click on the Continue button', async () => {
     await expect(browser).toHaveUrl('https://www.saucedemo.com/checkout-step-one.html');
 
     await $('#continue').click();
 
-    await browser.pause(1500);
+    await browser.pause(browserPause);
+  });
+
+  it('should validate the sum of the item total', async () => {
+    await expect(browser).toHaveUrl('https://www.saucedemo.com/checkout-step-two.html');
+
+    const cartItems = await $$('.cart_list .cart_item');
+
+    // Count the number of items in the cart
+    await expect(cartItems.length >= 2).toEqual(true);
+
+    let totalSum = 0;
+
+    for (let i = 0; i < cartItems.length; i++) {
+      const item = await cartItems[i];
+
+      let productPrice = await item.$('.inventory_item_price').getText();
+
+      // Remove $ from the price
+      productPrice = productPrice.trim().replace('$', '');
+
+      totalSum += parseFloat(productPrice);
+    }
+
+    let totalSumText = await $('.summary_total_label').getText();
+
+    // Remove unnecessary characters from the price
+    totalSumText = totalSumText.trim().replace('Total: $', '');
+
+    const totalSumInApp = parseFloat(totalSumText);
+
+    const totalWithTax = parseFloat((totalSum * 1.08).toFixed(2)); // 8% tax
+
+    // Check if the sum of the products is the same as the one in the app
+    await expect(totalSumInApp).toEqual(totalWithTax);
+
+    await browser.pause(browserPause);
   });
 
   // END CHECKOUT
