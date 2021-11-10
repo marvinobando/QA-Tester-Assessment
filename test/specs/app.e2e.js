@@ -18,6 +18,8 @@ describe('Automation Testing', () => {
     await browser.url(siteURL);
   });
 
+  // LOGIN
+
   it('should verify inputs are empty', async () => {
     // Verify input are empty
     const currentUsername = await usernameInput.getValue();
@@ -50,4 +52,25 @@ describe('Automation Testing', () => {
     // Verify user was logged in successfully
     await expect(usernameCookie[0].value).toEqual(username);
   });
+
+  // END LOGIN
+
+  // DASHBOARD
+
+  it('should add 2 items in dashboard', async () => {
+    await expect(browser).toHaveUrl('https://www.saucedemo.com/inventory.html');
+
+    const inventoryItems = await $$('.inventory_list .inventory_item');
+
+    if (inventoryItems.length >= 2) {
+      for (let i = 0; i < 2; i++) {
+        const item = await inventoryItems[i];
+        await item.$('.btn_inventory').click();
+      }
+    }
+
+    // await browser.pause(3000);
+  });
+
+  // END DASHBOARD
 });
