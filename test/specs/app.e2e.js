@@ -12,10 +12,10 @@ describe('Automation Testing', () => {
   before(async () => {
     siteURL = 'https://www.saucedemo.com/';
 
-    usernameInput = $('input#user-name');
-    passwordInput = $('input#password');
-
     await browser.url(siteURL);
+
+    usernameInput = await $('input#user-name');
+    passwordInput = await $('input#password');
   });
 
   // LOGIN
@@ -33,6 +33,8 @@ describe('Automation Testing', () => {
     // Set values
     await usernameInput.setValue(username);
     await passwordInput.setValue(password);
+
+    await browser.pause(1500);
   });
 
   it('should verify that the input contains their respective values', async () => {
@@ -51,6 +53,8 @@ describe('Automation Testing', () => {
 
     // Verify user was logged in successfully
     await expect(usernameCookie[0].value).toEqual(username);
+
+    await browser.pause(1500);
   });
 
   // END LOGIN
@@ -73,10 +77,10 @@ describe('Automation Testing', () => {
       }
     }
 
+    await browser.pause(1500);
+
     // Click in shopping cart button
     await $('#shopping_cart_container .shopping_cart_link').click();
-
-    // await browser.pause(3000);
   });
 
   // END DASHBOARD
@@ -99,6 +103,8 @@ describe('Automation Testing', () => {
       // Verify the product name is the same as the one added
       await expect(addedProducts.includes(productName)).toEqual(true);
     }
+
+    await browser.pause(1500);
   });
 
   it('should click on the checkout button in Your Cart form', async () => {
@@ -107,8 +113,24 @@ describe('Automation Testing', () => {
     // Click in Checkout button
     await $('#checkout').click();
 
-    await browser.pause(3000);
+    await browser.pause(1500);
   });
 
   // END CART
+
+  // CHECKOUT
+  it('should complete checkout form', async () => {
+    await expect(browser).toHaveUrl('https://www.saucedemo.com/checkout-step-one.html');
+
+    const firstNameInput = await $('#first-name');
+    const lastNameInput = await $('#last-name');
+    const postalCodeInput = await $('#postal-code');
+
+    await firstNameInput.setValue('John');
+    await lastNameInput.setValue('Doe');
+    await postalCodeInput.setValue('12345');
+
+    await browser.pause(3000);
+  });
+  // END CHECKOUT
 });
