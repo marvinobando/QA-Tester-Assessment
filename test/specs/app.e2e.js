@@ -119,18 +119,39 @@ describe('Automation Testing', () => {
   // END CART
 
   // CHECKOUT
+
+  let firstNameInput;
+  let lastNameInput;
+  let postalCodeInput;
+
   it('should complete checkout form', async () => {
     await expect(browser).toHaveUrl('https://www.saucedemo.com/checkout-step-one.html');
 
-    const firstNameInput = await $('#first-name');
-    const lastNameInput = await $('#last-name');
-    const postalCodeInput = await $('#postal-code');
+    firstNameInput = await $('#first-name');
+    lastNameInput = await $('#last-name');
+    postalCodeInput = await $('#postal-code');
 
     await firstNameInput.setValue('John');
     await lastNameInput.setValue('Doe');
     await postalCodeInput.setValue('12345');
 
-    await browser.pause(3000);
+    await browser.pause(1500);
+
+    // await $('#continue').click();
   });
+
+  it('should validate that required fields in the checkout form', async () => {
+    await expect(browser).toHaveUrl('https://www.saucedemo.com/checkout-step-one.html');
+
+    const currentFirstName = await firstNameInput.getValue();
+    await expect(currentFirstName).not.toEqual('');
+
+    const currentLastName = await lastNameInput.getValue();
+    await expect(currentLastName).not.toEqual('');
+
+    const currentPostalCode = await postalCodeInput.getValue();
+    await expect(currentPostalCode).not.toEqual('');
+  });
+
   // END CHECKOUT
 });
